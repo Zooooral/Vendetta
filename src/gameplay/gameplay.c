@@ -38,10 +38,14 @@ static void change_map_if_needed(game_data_t *game)
 {
     map_id_t map_id = game->map.id;
 
-    if (is_in_portal(game, &game->map.portal))
+    if (is_in_portal(game, &game->map.portal)) {
+        play_sound(game, S_PORTAL);
         set_map(game, (map_id + 1) % 3, NULL);
-    if (is_in_portal(game, &game->map.back_portal))
+    }
+    if (is_in_portal(game, &game->map.back_portal)) {
+        play_sound(game, S_PORTAL);
         set_backmap(game, (map_id - 1) % 3);
+    }
     for (int i = 0; i < game->map.door_count; i++) {
         if (door_checker(game, &game->player->position,
             &game->map.doors[i].rect, game->map.doors[i].item)) {
@@ -55,9 +59,10 @@ static void update_gameplay(game_data_t *game)
 {
     sfTime time = sfClock_getElapsedTime(game->player->clock);
 
-    sfRenderWindow_setView(game->window, game->game_view);
     sfClock_restart(game->player->clock);
     update_player(game, time);
+    sfRenderTexture_setView(game->debug_overlay, game->game_view);
+    sfRenderWindow_setView(game->window, game->game_view);
     check_gameplay_keys(game);
     update_notifications(&game->notifications);
     change_map_if_needed(game);
@@ -103,8 +108,6 @@ void process_playing_gameplay(game_data_t *game)
 
 bool can_entity_pass(game_data_t *game, int new_x, int new_y)
 {
-    if (is_black_color(get_pixel_color(game->cols_map, new_x, new_y))
-        || can_pass_door(game, new_x, new_y) == false)
-        return false;
-    return true;
+    return (!(is_black_color(get_pixel_color(game->cols_map, new_x, new_y))
+        || can_pass_door(game, new_x, new_y) == false));
 }

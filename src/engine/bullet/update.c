@@ -22,6 +22,7 @@ static bool execute_enemy_touched(game_data_t *game, enemy_t *enemy,
             third_book_callback(game);
         }
     }
+    play_sound(game, S_HIT);
     return true;
 }
 
@@ -36,7 +37,9 @@ static bool execute_player_touched(game_data_t *game, bullet_t *bullet)
         player->health = 10;
         player->position = game->map.spawn_pos;
         change_game_mode(game, GAME_OVER);
+        play_sound(game, S_DIE);
     }
+    play_sound(game, S_UUH);
     return true;
 }
 
@@ -50,6 +53,8 @@ bool bullet_touched_entity(game_data_t *game, bullet_t *bullet)
     for (int i = 0; i < saved_len; ++i) {
         tmp = tmp->next;
         enemy = (enemy_t *)tmp->prev->data;
+        if (enemy->config->map_id != game->map.id)
+            continue;
         rect = get_hitbox_rect(&enemy->position, PLAYER_HITBOX);
         if (is_rect(bullet->position.x, bullet->position.y, &rect))
             return execute_enemy_touched(game, enemy, bullet, tmp);

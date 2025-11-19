@@ -41,11 +41,11 @@
 
 typedef struct game_assets_s {
     sfTexture *texture[IMAGE_COUNT];
-    sfSprite *sprite[SPRITE_COUNT];
+    sfSprite **sprite;
     sfSound *sound[SOUND_COUNT];
     sfSoundBuffer *sound_buff[SOUND_COUNT];
     sfMusic *music[MUSIC_COUNT];
-    sfShader *shaders[SHADER_COUNT];
+    sfShader **shaders;
 } game_assets_t;
 
 typedef struct player_data_s {
@@ -149,6 +149,8 @@ typedef struct game_data_s {
     sfClock *bullets_clock;
     bool map_unlocked[3];
     int main_quest_stage;
+    list_t active_sounds;
+    sfRenderTexture *debug_overlay;
 } game_data_t;
 
 void display_game_over(game_data_t *game);

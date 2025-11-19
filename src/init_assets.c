@@ -18,10 +18,8 @@ static void set_sprite_attribut(sfSprite *sprite, game_sprite_t SPRITE)
     sfSprite_setOrigin(sprite, SPRITE.origin);
 }
 
-static int load_textures(game_assets_t *assets)
+static void load_textures(game_assets_t *assets)
 {
-    sfSprite *sprite = NULL;
-
     for (size_t i = 0; i < IMAGE_COUNT; ++i) {
         dprintf(1, "Loading texture: %s\n", IMAGES[i]);
         assets->texture[i] = sfTexture_createFromFile(IMAGES[i], NULL);
@@ -29,7 +27,16 @@ static int load_textures(game_assets_t *assets)
             continue;
         dprintf(1, "OK !\n");
     }
-    for (size_t i = 0; i < SPRITE_COUNT; ++i) {
+}
+
+static int load_sprites(game_assets_t *assets)
+{
+    sfSprite *sprite = NULL;
+
+    assets->sprite = malloc(sizeof(sfSprite *) * SPRITE_COUNT);
+    if (assets->sprite == NULL)
+        return RET_FAIL;
+    for (int i = 0; i < SPRITE_COUNT; ++i) {
         dprintf(1, "Loading sprite with id: %d\n", SPRITES[i].id);
         sprite = sfSprite_create();
         if (sprite == NULL)
@@ -96,9 +103,12 @@ static int load_shaders(game_assets_t *assets)
 {
     sfShader *shader = NULL;
 
-    for (size_t i = 0; i < SHADER_COUNT; ++i) {
-        dprintf(1, "Loading shader: %s\n", SHADERS_PATHS[i]);
-        shader = sfShader_createFromFile(NULL, NULL, SHADERS_PATHS[i]);
+    assets->shaders = malloc(sizeof(sfShader *) * SHADER_PATHS_COUNT);
+    if (assets->shaders == NULL)
+        return RET_FAIL;
+    for (int i = 0; i < SHADER_PATHS_COUNT; ++i) {
+        dprintf(1, "Loading shader: %s\n", SHADER_PATHS[i]);
+        shader = sfShader_createFromFile(NULL, NULL, SHADER_PATHS[i]);
         if (shader == NULL)
             continue;
         assets->shaders[i] = shader;
@@ -111,6 +121,7 @@ int init_assets(game_data_t *game)
 {
     load_font(game);
     load_textures(&game->assets);
+    load_sprites(&game->assets);
     load_sounds(&game->assets);
     load_musics(&game->assets);
     load_shaders(&game->assets);

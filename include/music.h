@@ -31,6 +31,16 @@ static const char *SOUND_L[] = {
     "assets/sounds/weapons/punch.ogg",
     "assets/sounds/weapons/rifle.ogg",
     "assets/sounds/weapons/shotgun.ogg",
+    "assets/sounds/misc/player_hit.ogg",
+    "assets/sounds/weapons/ak47.ogg",
+    "assets/sounds/misc/potion.ogg",
+    "assets/sounds/misc/keys.ogg",
+    "assets/sounds/misc/villager_idle.ogg",
+    "assets/sounds/misc/villager_complete.ogg",
+    "assets/sounds/misc/portal.ogg",
+    "assets/sounds/misc/pills.ogg",
+    "assets/sounds/misc/uuh.ogg",
+    "assets/sounds/misc/die.ogg",
 };
 
 #endif /* !MUSIC_H_ */

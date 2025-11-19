@@ -13,7 +13,7 @@ static void destroy_game_elements(game_data_t *game)
 {
     for (size_t i = 0; i < IMAGE_COUNT; ++i)
         sfTexture_destroy(game->assets.texture[i]);
-    for (size_t i = 0; i < SPRITE_COUNT; ++i)
+    for (int i = 0; i < SPRITE_COUNT; ++i)
         sfSprite_destroy(game->assets.sprite[i]);
     for (size_t i = 0; i < SOUND_COUNT; ++i)
         sfSound_destroy(game->assets.sound[i]);
@@ -21,7 +21,7 @@ static void destroy_game_elements(game_data_t *game)
         sfSoundBuffer_destroy(game->assets.sound_buff[i]);
     for (size_t i = 0; i < MUSIC_COUNT; ++i)
         sfMusic_destroy(game->assets.music[i]);
-    for (size_t i = 0; i < SHADER_COUNT; ++i)
+    for (int i = 0; i < SHADER_PATHS_COUNT; ++i)
         sfShader_destroy(game->assets.shaders[i]);
 }
 
@@ -37,8 +37,14 @@ int destroy_game_data(game_data_t *game, int code)
     dprintf(1, "Destroy game data && free elements\n");
     destroy_game_elements(game);
     destroy_game_clocks(game);
+    sfRenderTexture_destroy(game->debug_overlay);
     sfRenderWindow_destroy(game->window);
     sfFont_destroy(game->font);
+    free_list(&game->active_sounds);
+    free_list(&game->enemies);
+    free_list(&game->bullets);
+    free_list(&game->npcs);
+    free_list(&game->entities);
     dprintf(1, "OK !\n");
     return code;
 }
